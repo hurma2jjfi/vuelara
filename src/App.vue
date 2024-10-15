@@ -1,26 +1,51 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div id="app">
+    <nav>
+      <router-link to="/">Каталог</router-link>
+      <router-link to="/register">Регистрация</router-link>
+      <router-link to="/login">Вход</router-link>
+      <router-link to="/cart">Корзина</router-link>
+      <router-link to="/orders">Заказы</router-link>
+      <button v-if="isUserLoggedIn" @click="logout">Выйти</button>
+    </nav>
+    <router-view />
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
 export default {
   name: 'App',
-  components: {
-    HelloWorld
+  data() {
+    return {
+      isUserLoggedIn: false,
+    };
+  },
+  created() {
+    // Проверяем, авторизован ли пользователь
+    this.checkUserLoginStatus();
+  },
+  methods: {
+    checkUserLoginStatus() {
+      const userId = localStorage.getItem('user_id'); // Предполагаем, что ID пользователя хранится в localStorage
+      this.isUserLoggedIn = !!userId; // Устанавливаем статус авторизации
+    },
+    logout() {
+      // Удаляем информацию о пользователе из localStorage
+      localStorage.removeItem('user_id');
+      localStorage.removeItem('token'); // Если у вас есть токен аутентификации
+      this.isUserLoggedIn = false; // Обновляем статус авторизации
+      this.$router.push('/login'); // Перенаправляем на страницу входа
+    }
   }
-}
+};
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+nav {
+  margin-bottom: 20px;
+}
+
+nav a {
+  margin-right: 15px;
 }
 </style>
